@@ -112,6 +112,8 @@ class Rects:
             for j in range(len(data_list[0])):
                 if data_list[i][j] == 1:
                     self.rects[i][j].set_color([125, 125, 125])
+                else:
+                    self.rects[i][j].set_color([0, 0, 0])
 
 
 class Drawer:
@@ -128,13 +130,13 @@ class Drawer:
         pygame.display.set_caption(caption_text)
         self.screen = pygame.display.set_mode((width, height), 0, 32)
         self.rects = rects
+        self.screen.fill([255, 255, 255])
 
     def show(self):
         self.rects.draw(self.screen)
         pygame.display.update()
 
     def run(self):
-        self.screen.fill([255, 255, 255])
         self.show()
         while True:
             for event in pygame.event.get():
