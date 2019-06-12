@@ -6,6 +6,7 @@ Rect：单元矩形点
 Rects：二维矩阵
 """
 import pygame
+import abc
 
 
 class Rect:
@@ -102,7 +103,7 @@ class Rects:
                                  [rect.x + rect.border, rect.y + rect.border, rect.side - rect.border * 2, rect.side],
                                  0)
 
-    def load_list(self, data_list):
+    def load(self, data_list, color_map={1: [125, 125, 125], 0: [0, 0, 0]}):
         """
         装载二维矩阵 如果矩阵值为1 显示蓝色 值为0显示红色
         :param data_list: 装载二维矩阵
@@ -110,14 +111,17 @@ class Rects:
         """
         for i in range(len(data_list)):
             for j in range(len(data_list[0])):
-                if data_list[i][j] == 1:
-                    self.rects[i][j].set_color([125, 125, 125])
-                else:
-                    self.rects[i][j].set_color([0, 0, 0])
+                if i >= self.row_num or j >= self.col_num:
+                    print(1)
+                    continue  # 确保不会越界
+                cur_key = data_list[i][j].item()
+                if cur_key in color_map.keys():
+                    self.rects[i][j].set_color(color_map[cur_key])
 
 
 class Drawer:
     """
+
     界面 绘画
     """
 
@@ -133,12 +137,38 @@ class Drawer:
         self.screen.fill([255, 255, 255])
 
     def show(self):
+        """
+        显示界面控件并更新
+        :return:
+        """
         self.rects.draw(self.screen)
         pygame.display.update()
 
-    def run(self):
+    def run(self, change_interval=0.5, change_max_times=100, FPS=100):
+        """
+        界面运行 每隔一段时间刷新一次 刷新次数具有上限
+        :param change_interval:
+        :param change_max_times:
+        :param FPS:
+        :return:
+        """
+        fps = pygame.time.Clock()
+        num = 0
+        pause = False
+
         self.show()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
+
+            fps.tick(FPS)
+            num = (num + 1) % int((change_interval * FPS))
+
+            if num == 0 and not pause:  # 更新状态
+                self.change_status()
+                self.show()
+
+    @abc.abstractmethod
+    def change_status(self):
+        pass
