@@ -3,7 +3,7 @@ import torch
 
 class Cells:
     def __init__(self, mat):
-        self.matrix = mat.clone()
+        self.matrix = mat.clone().type(torch.LongTensor)
         self.shape = mat.shape
         self.kernel = torch.tensor([[1., 1., 1.],
                                     [1., 0., 1.],
