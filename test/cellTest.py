@@ -65,3 +65,25 @@ class CellsTest(unittest.TestCase):
         cells = Cells(tensor)
         cells.update()
         self.assertTrue(torch.equal(target, cells.matrix))
+
+    def test_load_from_file(self):
+        cells = Cells()
+        filename = 'patterns/gunstar.rle'
+        cells.load_from_file(filename)
+        target = torch.zeros(3, 10)
+        ones = [
+            [0, 7],
+            [0, 8],
+            [1, 3],
+            [1, 5],
+            [1, 8],
+            [2, 0],
+            [2, 1],
+            [2, 5],
+            [2, 6]
+        ]
+
+        for i, j in ones:
+            target[i][j] = 1
+
+        self.assertTrue(torch.equal(target, cells.matrix))
