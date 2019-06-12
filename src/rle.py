@@ -29,6 +29,10 @@ def decode(rle_str):
         if c == '$':
             lines.append(line)
             line = []
+            if count > 1:
+                for _ in range(count - 1):
+                    lines.append(line)
+                count = 0
     return lines
 
 
