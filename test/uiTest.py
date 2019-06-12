@@ -18,4 +18,4 @@ if __name__ == '__main__':
         rects.load_list(cells.matrix)
         drawer.show()
         cells.update()
-        time.sleep(0.5)
+        time.sleep(0.1)
