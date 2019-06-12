@@ -67,7 +67,8 @@ class CellsTest(unittest.TestCase):
         self.assertTrue(torch.equal(target, cells.matrix))
 
     def test_load_from_file(self):
-        cells = Cells()
+        # TODO: 需要重构 构造函数
+        cells = Cells(torch.tensor(0))
         filename = 'patterns/gunstar.rle'
         cells.load_from_file(filename)
         target = torch.zeros(3, 10)
