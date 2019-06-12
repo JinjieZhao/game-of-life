@@ -15,5 +15,4 @@ class CellsTest(unittest.TestCase):
                                [0, 0, 0]])
         cells = Cells(tensor)
         cells.update()
-
-        self.assertEqual(target, cells.matrix)
+        self.assertTrue(torch.equal(target, cells.matrix.type(torch.LongTensor)))
