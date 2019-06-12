@@ -24,4 +24,4 @@ class relTest(unittest.TestCase):
         for i, j in ones:
             target[i][j] = 1
 
-        self.assertTrue(torch.equal(target, src.rle.rle2tensor(rle_str)))
+        self.assertTrue(torch.equal(target, src.rle.rle2tensor(rle_str, h, w)))
