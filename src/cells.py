@@ -14,5 +14,7 @@ class Cells:
         return torch.conv2d(mat, self.kernel, padding=1).view(*self.shape)
 
     def update(self):
-        live_nums_nearby = self.conv()
-        self.matrix = (live_nums_nearby == 3)
+        live_mat_nearby = self.conv()
+        nearby_3_live = (live_mat_nearby == 3).type(torch.LongTensor)
+        nearby_2_live = (live_mat_nearby == 2).type(torch.LongTensor) * self.matrix
+        self.matrix = nearby_2_live + nearby_3_live
