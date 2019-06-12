@@ -69,7 +69,7 @@ class CellsTest(unittest.TestCase):
     def test_load_from_file(self):
         # TODO: 需要重构 构造函数
         cells = Cells(torch.tensor(0))
-        filename = 'patterns/gunstar.rle'
+        filename = '../patterns/test.rle'
         cells.load_from_file(filename)
         target = torch.zeros(3, 10)
         ones = [
