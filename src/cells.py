@@ -1,4 +1,5 @@
 import torch
+import src.rle
 
 
 class Cells:
@@ -25,3 +26,20 @@ class Cells:
         nearby_3_live = (live_num_mat_nearby == 3).type(torch.LongTensor)
         nearby_2_live = (live_num_mat_nearby == 2).type(torch.LongTensor) * self.matrix
         self.matrix = nearby_2_live + nearby_3_live
+
+    def load_from_file(self, filename):
+        with open(filename) as f:
+            rle = []
+            for line in f:
+                line = line.strip()
+                if line.startswith('#'):
+                    pass
+                elif line.startswith('x'):
+                    data = line.split(',')
+                    weight = int(data[0].split()[-1])
+                    height = int(data[1].split()[-1])
+                else:
+                    rle.append(line)
+            rle = ''.join(rle)
+            self.matrix = src.rle.rle2tensor(rle, height, weight).type(torch.LongTensor)
+            self.shape = self.matrix.shape
