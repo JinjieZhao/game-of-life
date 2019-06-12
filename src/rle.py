@@ -47,3 +47,40 @@ def rle2tensor(rle_str, height, weight):
                     tensor[row][col] = 1
                     col += 1
     return tensor
+
+
+def encode_one_line(line):
+    res = []
+
+    count = 1
+    pre = line[0]
+    for i in range(1, len(line)):
+        cur = line[i]
+        if pre == cur:
+            count += 1
+        else:
+            res.append((str(count) if count > 1 else '') + pre)
+            count = 1
+            pre = cur
+    if line[-1] == 'o':
+        res.append((str(count) if count > 1 else '') + line[-1])
+
+    return ''.join(res)
+
+
+def encode(lines):
+    return '$'.join(map(encode_one_line, lines)) + '!'
+
+
+def tensor2rle(tensor):
+    tensor = tensor.type(torch.LongTensor)
+
+    bos = {
+        0: 'b',
+        1: 'o'
+    }
+
+    # 把tensor 转成bbboo 的列表
+    lines = [[bos[int(i)] for i in row] for row in tensor]
+
+    return encode(lines)
