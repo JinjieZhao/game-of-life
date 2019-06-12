@@ -51,3 +51,17 @@ class CellsTest(unittest.TestCase):
         cells = Cells(tensor)
         cells.update()
         self.assertTrue(torch.equal(target, cells.matrix))
+
+    def test_should_more_die(self):
+        """
+        如果周围细胞数量小于2 细胞会死亡
+        """
+        tensor = torch.tensor([[1, 1, 1],
+                               [1, 1, 1],
+                               [1, 1, 1]])
+        target = torch.tensor([[1, 0, 1],
+                               [0, 0, 0],
+                               [1, 0, 1]])
+        cells = Cells(tensor)
+        cells.update()
+        self.assertTrue(torch.equal(target, cells.matrix))
