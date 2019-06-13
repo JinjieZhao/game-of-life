@@ -103,10 +103,6 @@ class Rects:
         for i in range(self.row_num):
             for j in range(self.col_num):
                 rect = self.rects[i][j]
-                # pygame.draw.rect(screen, BORDER_COLOR, [rect.x, rect.y, rect.side, rect.side], 1)
-                # pygame.draw.rect(screen, rect.color,
-                #                  [rect.x + rect.border, rect.y + rect.border, rect.side - rect.border * 2, rect.side],
-                #                  0)
                 pygame.draw.rect(screen, rect.color,
                                  [rect.x, rect.y, rect.side, rect.side],
                                  0)
@@ -181,7 +177,9 @@ class Drawer:
         """
         for key in self.positions.keys():
             if 'button' in key:
-                self.buttons[key] = Button(self.positions[key]['img_path'], self.positions[key]['img_path'], (self.positions[key]['x'], self.positions[key]['y']) )
+                self.buttons[key] = Button(self.positions[key]['img_path'],
+                                           self.positions[key]['img_path'],
+                                           (self.positions[key]['x'], self.positions[key]['y']) )
                 self.buttons[key].show(self.screen)
 
     def show(self):
