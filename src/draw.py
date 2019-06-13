@@ -6,6 +6,12 @@ Rect：单元矩形点
 Rects：二维矩阵
 """
 import pygame
+import abc
+from .control import Button, inImgRange
+
+LIVE_COLOR = [125, 125, 125]
+DEAD_COLOR = [0, 0, 0]
+BORDER_COLOR = [255, 255, 0]
 
 
 class Rect:
@@ -97,12 +103,12 @@ class Rects:
         for i in range(self.row_num):
             for j in range(self.col_num):
                 rect = self.rects[i][j]
-                pygame.draw.rect(screen, [255, 255, 0], [rect.x, rect.y, rect.side, rect.side], rect.border)
+                pygame.draw.rect(screen, BORDER_COLOR, [rect.x, rect.y, rect.side, rect.side], rect.border)
                 pygame.draw.rect(screen, rect.color,
                                  [rect.x + rect.border, rect.y + rect.border, rect.side - rect.border * 2, rect.side],
                                  0)
 
-    def load_list(self, data_list):
+    def load(self, data_list, color_map={1: LIVE_COLOR, 0: DEAD_COLOR}):
         """
         装载二维矩阵 如果矩阵值为1 显示蓝色 值为0显示红色
         :param data_list: 装载二维矩阵
@@ -110,18 +116,38 @@ class Rects:
         """
         for i in range(len(data_list)):
             for j in range(len(data_list[0])):
-                if data_list[i][j] == 1:
-                    self.rects[i][j].set_color([125, 125, 125])
-                else:
-                    self.rects[i][j].set_color([0, 0, 0])
+                if i >= self.row_num or j >= self.col_num:
+                    print(1)
+                    continue  # 确保不会越界
+                cur_key = data_list[i][j].item()
+                if cur_key in color_map.keys():
+                    self.rects[i][j].set_color(color_map[cur_key])
 
+    def get_data(self, data_map={1: LIVE_COLOR, 0: DEAD_COLOR}):
+        data = []
+        for i in range(self.row_num):
+            data.append([])
+            for j in range(self.col_num):
+                cur_rect = self.rects[i][j]
+                if cur_rect.color in data_map.values():
+                    data[i].append(list(data_map.keys())[list(data_map.values()).index(cur_rect.color)])
+                else:
+                    data[i].append(-1)
+        return data
+
+    def clear(self):
+        for i in range(self.row_num):
+            for j in range(self.col_num):
+                rect = self.rects[i][j]
+                rect.set_color(DEAD_COLOR)
 
 class Drawer:
     """
+
     界面 绘画
     """
 
-    def __init__(self, rects, caption_text, width, height):
+    def __init__(self, row_num, col_num, caption_text, width, height):
         """
         初始化
         :param rect: 设置矩阵
@@ -129,16 +155,91 @@ class Drawer:
         pygame.init()
         pygame.display.set_caption(caption_text)
         self.screen = pygame.display.set_mode((width, height), 0, 32)
-        self.rects = rects
-        self.screen.fill([255, 255, 255])
+        self.buttons = {}
+        self.positions = {}
+        self.init_positions()
+        self.rects = Rects(row_num, col_num, self.positions['rects']['width'],
+                           DEAD_COLOR, self.positions['rects']['x'],
+                           self.positions['rects']['y'])
+        self.screen.fill([0, 255, 255])
+        self.init_control()
+
+    def init_positions(self):
+        """
+        x y width height
+        :return:
+        """
+        self.positions['rects'] = self.get_position(20, 100, 50, 50)
+        self.positions['button_start'] = self.get_position(800, 100, 80, 30)
+        self.positions['button_pause'] = self.get_position(800, 180, 80, 30)
+        self.positions['button_clear'] = self.get_position(800, 260, 80, 30)
+        self.positions['button_save'] = self.get_position(800, 340, 80, 30)
+
+    def get_position(self, x, y, width, height):
+        return {
+            'x': x,
+            'y': y,
+            'width': width,
+            'height': height
+        }
+
+    def init_control(self):
+        for key in self.positions.keys():
+            if 'button' in key:
+                self.buttons[key] = Button('../1.png', '../1.png', (self.positions[key]['x'], self.positions[key]['y']) )
+                self.buttons[key].show(self.screen)
 
     def show(self):
+        """
+        显示界面控件并更新
+        :return:
+        """
         self.rects.draw(self.screen)
         pygame.display.update()
 
-    def run(self):
+    def run(self, change_interval=0.5, change_max_times=100, FPS=100):
+        """
+        界面运行 每隔一段时间刷新一次 刷新次数具有上限
+        :param change_interval:
+        :param change_max_times:
+        :param FPS:
+        :return:
+        """
+        fps = pygame.time.Clock()
+        num = 0
+        pause = True
+
         self.show()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit()
+                if event.type == pygame.MOUSEBUTTONDOWN: # 判断鼠标是否摁了下去。
+                    if self.buttons['button_start'].inButtonRange():
+                        pause = False
+                    if self.buttons['button_pause'].inButtonRange():
+                        pause = True
+                    if self.buttons['button_clear'].inButtonRange():
+                        self.rects.clear()
+                    for rows in self.rects.rects:
+                        for point in rows:
+                            if inImgRange([point.x, point.y], point.side, point.side):
+                                point.set_color(LIVE_COLOR)
+                    self.set_data(self.rects.get_data())
+                    self.show()
+                    pass
+
+            fps.tick(FPS)
+            num = (num + 1) % int((change_interval * FPS))
+
+            if num == 0 and not pause:  # 更新状态
+                self.change_status()
+                self.show()
+
+    @abc.abstractmethod
+    def change_status(self):
+        pass
+
+    @abc.abstractmethod
+    def set_data(self, data):
+        pass
