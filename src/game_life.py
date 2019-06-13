@@ -30,4 +30,4 @@ if __name__ == '__main__':
     data = torch.zeros(50, 50)
 
     drawer = MyDrawer('GAME OF LIFE', 1000, 650, data)
-    drawer.run(change_interval=0.5)
+    drawer.run(change_interval=0.1)

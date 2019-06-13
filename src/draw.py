@@ -189,46 +189,57 @@ class Drawer:
         """
         fps = pygame.time.Clock()
         num = 0
-        pause = True
+        self.pause = True
+        self.change_interval = change_interval
 
         self.show()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        change_interval -= 0.1 if change_interval > 0.5 else 0
-                    if event.key == pygame.K_DOWN:
-                        change_interval += 0.1
+                    self.key_down(event)
                 if event.type == pygame.QUIT:
                     exit()
                 if event.type == pygame.MOUSEBUTTONDOWN: # 判断鼠标是否摁了下去。
-                    if self.buttons['button_start'].inButtonRange():
-                        pause = False
-                    if self.buttons['button_pause'].inButtonRange():
-                        pause = True
-                    if self.buttons['button_clear'].inButtonRange():
-                        self.rects.clear()
-                    if self.buttons['button_open'].inButtonRange():
-                        shape = self.open_file()
-                        self.rects = Rects(shape[0], shape[1], self.positions['rects']['width'],
-                                           DEAD_COLOR, self.positions['rects']['x'],
-                                           self.positions['rects']['y'])
-
-                        self.change_status()
-                    for rows in self.rects.rects:
-                        for point in rows:
-                            if inImgRange([point.x, point.y], point.side, point.side):
-                                point.set_color(LIVE_COLOR)
-                    self.set_data(self.rects.get_data())
-                    self.show()
-                    pass
+                    self.mouse_down()
 
             fps.tick(FPS)
-            num = (num + 1) % int((change_interval * FPS))
+            num = (num + 1) % int((self.change_interval * FPS))
 
-            if num == 0 and not pause:  # 更新状态
+            if num == 0 and not self.pause:  # 更新状态
                 self.change_status()
                 self.show()
+
+    def _open_file(self):
+        shape = self.open_file()
+        self.rects = Rects(shape[0], shape[1], self.positions['rects']['width'],
+                           DEAD_COLOR, self.positions['rects']['x'],
+                           self.positions['rects']['y'])
+        self.change_status()
+
+    def reload_rects(self):
+        for rows in self.rects.rects:
+            for point in rows:
+                if inImgRange([point.x, point.y], point.side, point.side):
+                    point.set_color(LIVE_COLOR)
+
+    def mouse_down(self):
+        if self.buttons['button_start'].inButtonRange():
+            self.pause = False
+        if self.buttons['button_pause'].inButtonRange():
+            self.pause = True
+        if self.buttons['button_clear'].inButtonRange():
+            self.rects.clear()
+        if self.buttons['button_open'].inButtonRange():
+            self._open_file()
+        self.reload_rects()
+        self.set_data(self.rects.get_data())
+        self.show()
+
+    def key_down(self, event):
+        if event.key == pygame.K_UP:
+            self.change_interval -= 0.1 if self.change_interval > 0.5 else 0
+        if event.key == pygame.K_DOWN:
+            self.change_interval += 0.1
 
     @abc.abstractmethod
     def change_status(self):
