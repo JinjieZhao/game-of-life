@@ -215,6 +215,11 @@ class Drawer:
         self.show()
         while True:
             for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        change_interval -= 0.1 if change_interval > 0.5 else 0
+                    if event.key == pygame.K_DOWN:
+                        change_interval += 0.1
                 if event.type == pygame.QUIT:
                     exit()
                 if event.type == pygame.MOUSEBUTTONDOWN: # 判断鼠标是否摁了下去。
