@@ -33,6 +33,18 @@ class Button(object):
             screen.blit(self.buttonUp, (x - w / 2, y - h / 2))
 
 
+class Font:
+
+    def __init__(self, cont, x, y, color, back_color):
+        fontObj = pygame.font.Font('PAPYRUS.ttf', 48)  # 通过字体文件获得字体对象
+        self.textSurfaceObj = fontObj.render('Hello world!', True, color, back_color)  # 配置要显示的文字
+        self.textRectObj = self.textSurfaceObj.get_rect()  # 获得要显示的对象的rect
+        self.textRectObj.center = (x, y)  # 设置显示对象的坐标
+
+    def draw(self, screen):
+        screen.blit(self.textSurfaceObj, self.textRectObj)  # 绘制字体
+        
+
 def inImgRange(pos, w, h):
     # 获取鼠标的位置
     mouseX, mouseY = pygame.mouse.get_pos()
