@@ -31,7 +31,7 @@ positions = {
 		'width': 80,
 		'height': 30
 	},
-	'button_save': {
+	'button_open': {
 		'x': 800,
 		'y': 340,
 		'width': 80,

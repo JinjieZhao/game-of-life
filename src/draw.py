@@ -65,7 +65,7 @@ class Rects:
         self.rects = self.init_rects()
 
     def caculate_rect_size(self, rects_size):
-        return rects_size / self.row_num
+        return rects_size / self.row_num if self.row_num > self.col_num else rects_size / self.col_num
 
     def init_rects(self):
         """
@@ -103,9 +103,12 @@ class Rects:
         for i in range(self.row_num):
             for j in range(self.col_num):
                 rect = self.rects[i][j]
-                pygame.draw.rect(screen, BORDER_COLOR, [rect.x, rect.y, rect.side, rect.side], rect.border)
+                # pygame.draw.rect(screen, BORDER_COLOR, [rect.x, rect.y, rect.side, rect.side], 1)
+                # pygame.draw.rect(screen, rect.color,
+                #                  [rect.x + rect.border, rect.y + rect.border, rect.side - rect.border * 2, rect.side],
+                #                  0)
                 pygame.draw.rect(screen, rect.color,
-                                 [rect.x + rect.border, rect.y + rect.border, rect.side - rect.border * 2, rect.side],
+                                 [rect.x, rect.y, rect.side, rect.side],
                                  0)
 
     def load(self, data_list, color_map={1: LIVE_COLOR, 0: DEAD_COLOR}):
@@ -143,7 +146,6 @@ class Rects:
 
 class Drawer:
     """
-
     界面 绘画
     """
 
@@ -206,6 +208,13 @@ class Drawer:
                         pause = True
                     if self.buttons['button_clear'].inButtonRange():
                         self.rects.clear()
+                    if self.buttons['button_open'].inButtonRange():
+                        shape = self.open_file()
+                        self.rects = Rects(shape[0], shape[1], self.positions['rects']['width'],
+                                           DEAD_COLOR, self.positions['rects']['x'],
+                                           self.positions['rects']['y'])
+
+                        self.change_status()
                     for rows in self.rects.rects:
                         for point in rows:
                             if inImgRange([point.x, point.y], point.side, point.side):
@@ -227,4 +236,8 @@ class Drawer:
 
     @abc.abstractmethod
     def set_data(self, data):
+        pass
+
+    @abc.abstractmethod
+    def open_file(self):
         pass

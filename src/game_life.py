@@ -6,7 +6,8 @@ import time
 
 class MyDrawer(Drawer):
 
-    def __init__(self, row_num, col_num, caption_text, width, height, data):
+    def __init__(self, caption_text, width, height, data):
+        row_num, col_num = data.shape
         super().__init__(row_num, col_num, caption_text, width, height)
         self.cells = Cells(data)
 
@@ -19,15 +20,19 @@ class MyDrawer(Drawer):
             for j in range(len(data[0])):
                 self.cells.matrix[i][j] = data[i][j]
 
+    def open_file(self):
+        from tkinter import filedialog
+        path = filedialog.askopenfilename()
+        self.cells.load_from_file(path)
+        return self.cells.shape
 
 if __name__ == '__main__':
-    data = torch.zeros(10, 10)
+    data = torch.zeros(100, 100)
     data[0][2] = 1
     data[1][2] = 1
     data[2][2] = 1
     data[2][1] = 1
     data[1][0] = 1
 
-    drawer = MyDrawer(10, 10, 'GAME OF LIFE', 1000, 700, data)
-    print(drawer.positions)
-    drawer.run(change_interval=1.5)
+    drawer = MyDrawer('GAME OF LIFE', 1000, 700, data)
+    drawer.run(change_interval=0.5)
