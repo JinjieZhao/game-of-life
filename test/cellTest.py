@@ -54,7 +54,7 @@ class CellsTest(unittest.TestCase):
 
     def test_should_more_die(self):
         """
-        如果周围细胞数量小于2 细胞会死亡
+        如果周围细胞数量大于3 细胞会死亡
         """
         tensor = torch.tensor([[1, 1, 1],
                                [1, 1, 1],
