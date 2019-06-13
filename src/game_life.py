@@ -29,4 +29,5 @@ if __name__ == '__main__':
     data[1][0] = 1
 
     drawer = MyDrawer(10, 10, 'GAME OF LIFE', 1000, 700, data)
+    print(drawer.positions)
     drawer.run(change_interval=1.5)

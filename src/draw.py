@@ -7,11 +7,8 @@ Rects：二维矩阵
 """
 import pygame
 import abc
+from.config import *
 from .control import Button, inImgRange
-
-LIVE_COLOR = [125, 125, 125]
-DEAD_COLOR = [0, 0, 0]
-BORDER_COLOR = [255, 255, 0]
 
 
 class Rect:
@@ -159,32 +156,12 @@ class Drawer:
         pygame.display.set_caption(caption_text)
         self.screen = pygame.display.set_mode((width, height), 0, 32)
         self.buttons = {}
-        self.positions = {}
-        self.init_positions()
+        self.positions = positions
         self.rects = Rects(row_num, col_num, self.positions['rects']['width'],
                            DEAD_COLOR, self.positions['rects']['x'],
                            self.positions['rects']['y'])
         self.screen.fill([0, 255, 255])
         self.init_control()
-
-    def init_positions(self):
-        """
-        x y width height
-        :return:
-        """
-        self.positions['rects'] = self.get_position(20, 100, 500, 500)
-        self.positions['button_start'] = self.get_position(800, 100, 80, 30)
-        self.positions['button_pause'] = self.get_position(800, 180, 80, 30)
-        self.positions['button_clear'] = self.get_position(800, 260, 80, 30)
-        self.positions['button_save'] = self.get_position(800, 340, 80, 30)
-
-    def get_position(self, x, y, width, height):
-        return {
-            'x': x,
-            'y': y,
-            'width': width,
-            'height': height
-        }
 
     def init_control(self):
         for key in self.positions.keys():
