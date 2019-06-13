@@ -168,7 +168,7 @@ class Drawer:
     def init_control(self):
         for key in self.positions.keys():
             if 'button' in key:
-                self.buttons[key] = Button('../1.png', '../1.png', (self.positions[key]['x'], self.positions[key]['y']) )
+                self.buttons[key] = Button(self.positions[key]['img_path'], self.positions[key]['img_path'], (self.positions[key]['x'], self.positions[key]['y']) )
                 self.buttons[key].show(self.screen)
 
     def show(self):

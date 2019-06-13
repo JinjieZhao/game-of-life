@@ -27,12 +27,7 @@ class MyDrawer(Drawer):
         return self.cells.shape
 
 if __name__ == '__main__':
-    data = torch.zeros(100, 100)
-    data[0][2] = 1
-    data[1][2] = 1
-    data[2][2] = 1
-    data[2][1] = 1
-    data[1][0] = 1
+    data = torch.zeros(50, 50)
 
-    drawer = MyDrawer('GAME OF LIFE', 1000, 700, data)
+    drawer = MyDrawer('GAME OF LIFE', 1000, 650, data)
     drawer.run(change_interval=0.5)
