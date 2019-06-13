@@ -17,15 +17,15 @@ class MyDrawer(Drawer):
     def set_data(self, data):
         for i in range(len(data)):
             for j in range(len(data[0])):
-                pass#self.cells.matrix[i][j] = data[i][j]
+                self.cells.matrix[i][j] = data[i][j]
 
 if __name__ == '__main__':
-    data = torch.zeros(10, 10)
+    data = torch.zeros(500, 500)
     data[0][2] = 1
     data[1][2] = 1
     data[2][2] = 1
     data[2][1] = 1
     data[1][0] = 1
 
-    drawer = MyDrawer(10, 10, 'test', 1000, 700, data)
+    drawer = MyDrawer(500, 500, 'GAME OF LIFE', 1000, 700, data)
     drawer.run(change_interval=1.5)

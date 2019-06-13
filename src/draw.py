@@ -49,7 +49,7 @@ class Rects:
     矩阵表格 包含x*y个矩形
     """
 
-    def __init__(self, row_num, col_num, side, color, start_x, start_y):
+    def __init__(self, row_num, col_num, rects_side, color, start_x, start_y):
         """
         初始化矩阵
         :param row_num: 矩阵的行数
@@ -61,11 +61,14 @@ class Rects:
         """
         self.row_num = row_num
         self.col_num = col_num
-        self.side = side
+        self.side = self.caculate_rect_size(rects_side)
         self.color = color
         self.start_x = start_x
         self.start_y = start_y
         self.rects = self.init_rects()
+
+    def caculate_rect_size(self, rects_size):
+        return rects_size / self.row_num
 
     def init_rects(self):
         """
@@ -169,7 +172,7 @@ class Drawer:
         x y width height
         :return:
         """
-        self.positions['rects'] = self.get_position(20, 100, 50, 50)
+        self.positions['rects'] = self.get_position(20, 100, 500, 500)
         self.positions['button_start'] = self.get_position(800, 100, 80, 30)
         self.positions['button_pause'] = self.get_position(800, 180, 80, 30)
         self.positions['button_clear'] = self.get_position(800, 260, 80, 30)
