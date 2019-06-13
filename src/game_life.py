@@ -1,7 +1,6 @@
 from src.cells import Cells
 from src.draw import *
 import torch
-import time
 
 
 class MyDrawer(Drawer):

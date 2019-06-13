@@ -127,6 +127,11 @@ class Rects:
                     self.rects[i][j].set_color(color_map[cur_key])
 
     def get_data(self, data_map={1: LIVE_COLOR, 0: DEAD_COLOR}):
+        """
+        将前台的修改压缩到数据中返回给上层
+        :param data_map: 块颜色和矩阵数值的映射
+        :return:
+        """
         data = []
         for i in range(self.row_num):
             data.append([])
@@ -139,6 +144,10 @@ class Rects:
         return data
 
     def clear(self):
+        """
+        清除矩阵
+        :return:
+        """
         for i in range(self.row_num):
             for j in range(self.col_num):
                 rect = self.rects[i][j]
@@ -166,6 +175,10 @@ class Drawer:
         self.init_control()
 
     def init_control(self):
+        """
+        初始化控件
+        :return:
+        """
         for key in self.positions.keys():
             if 'button' in key:
                 self.buttons[key] = Button(self.positions[key]['img_path'], self.positions[key]['img_path'], (self.positions[key]['x'], self.positions[key]['y']) )
@@ -210,6 +223,10 @@ class Drawer:
                 self.show()
 
     def _open_file(self):
+        """
+        打开文件操作
+        :return:
+        """
         shape = self.open_file()
         self.rects = Rects(shape[0], shape[1], self.positions['rects']['width'],
                            DEAD_COLOR, self.positions['rects']['x'],
@@ -217,12 +234,20 @@ class Drawer:
         self.change_status()
 
     def reload_rects(self):
+        """
+        重载矩阵
+        :return:
+        """
         for rows in self.rects.rects:
             for point in rows:
                 if inImgRange([point.x, point.y], point.side, point.side):
                     point.set_color(LIVE_COLOR)
 
     def mouse_down(self):
+        """
+        鼠标按下时操作
+        :return:
+        """
         if self.buttons['button_start'].inButtonRange():
             self.pause = False
         if self.buttons['button_pause'].inButtonRange():
@@ -236,6 +261,11 @@ class Drawer:
         self.show()
 
     def key_down(self, event):
+        """
+        键盘按下时操作
+        :param event:
+        :return:
+        """
         if event.key == pygame.K_UP:
             self.change_interval -= 0.1 if self.change_interval > 0.5 else 0
         if event.key == pygame.K_DOWN:
